@@ -1,7 +1,7 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python3
+#
 #  Copyright (c) 2020 Hombrelab <me@hombrelab.com>
-
+#
 # watermeter-reader.py - read the GPIO pins for information about the water meter
 
 import RPi.GPIO as GPIO
@@ -16,6 +16,8 @@ from datetime import datetime
 CONSUMED = os.getenv('CONSUMED', 0)
 BROKER_URL = os.getenv('BROKER_URL', 'host.name')
 BROKER_PORT = os.getenv('BROKER_PORT', 1883)
+BROKER_USERNAME = os.getenv('BROKER_USER', None)
+BROKER_PASSWORD = os.getenv('BROKER_PASSWORD', None)
 TOPIC = os.getenv('TOPIC', 'home-assistant/watermeter-reader')
 LOG_LEVEL = os.getenv('LOG_LEVEL', logging.INFO)
 
@@ -29,6 +31,8 @@ ELEMENT_LAST_TIMESTAMP = 'lastTimestamp'
 ELEMENT_PULSE = 'pulse'
 ELEMENT_CONSUMED = 'consumed'
 ELEMENT_TIMESTAMP = 'timestamp'
+USERNAME = 'username'
+PASSWORD = 'password'
 
 LITERS_DELTA = float(30)
 
@@ -113,7 +117,13 @@ def init_data():
     if ELEMENT_LITERS_TIMESTAMP in data:
         liters_timestamp = float(data[ELEMENT_LITERS_TIMESTAMP])
 
-    publish.single(topic=TOPIC, payload=json.dumps(data), qos=1, retain=False, hostname=BROKER_URL, port=int(BROKER_PORT))
+    credentials = {}
+
+    if BROKER_USERNAME:
+        credentials['username'] = BROKER_USERNAME
+        credentials['password'] = BROKER_PASSWORD
+
+    publish.single(topic=TOPIC, payload=json.dumps(data), qos=1, retain=False, hostname=BROKER_URL, port=int(BROKER_PORT), auth=credentials)
 
 
 def publish_data():
@@ -144,7 +154,13 @@ def publish_data():
 
         file.close()
 
-    publish.single(topic=TOPIC, payload=json.dumps(data), qos=1, retain=False, hostname=BROKER_URL, port=int(BROKER_PORT))
+    credentials = {}
+
+    if BROKER_USERNAME:
+        credentials['username'] = BROKER_USERNAME
+        credentials['password'] = BROKER_PASSWORD
+
+    publish.single(topic=TOPIC, payload=json.dumps(data), qos=1, retain=False, hostname=BROKER_URL, port=int(BROKER_PORT), auth=credentials)
 
     logging.info('Event handler published and stored liters \'%s\' & consumed \'%s\'', data[ELEMENT_LITERS_CONSUMED], format_meter(int(data[ELEMENT_CONSUMED])))
 
