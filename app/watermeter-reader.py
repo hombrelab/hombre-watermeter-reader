@@ -16,7 +16,7 @@ from datetime import datetime
 CONSUMED = os.getenv('CONSUMED', 0)
 BROKER_URL = os.getenv('BROKER_URL', 'host.name')
 BROKER_PORT = os.getenv('BROKER_PORT', 1883)
-BROKER_USERNAME = os.getenv('BROKER_USER', None)
+BROKER_USERNAME = os.getenv('BROKER_USERNAME', None)
 BROKER_PASSWORD = os.getenv('BROKER_PASSWORD', None)
 TOPIC = os.getenv('TOPIC', 'home-assistant/watermeter-reader')
 LOG_LEVEL = os.getenv('LOG_LEVEL', logging.INFO)
