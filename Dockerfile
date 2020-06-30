@@ -14,4 +14,4 @@ RUN mkdir -p /app/log
 COPY ./app/watermeter-reader.py /app/watermeter-reader.py
 COPY ./app/LICENSE /app/LICENSE
 
-CMD python /app/watermeter-reader.py
+CMD python3 /app/watermeter-reader.py
